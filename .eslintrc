@@ -1,0 +1,3 @@
+{
+  "extends": "@cbs-ui/eslint-config"
+}

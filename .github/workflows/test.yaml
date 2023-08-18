@@ -1,0 +1,60 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on:
+      - self-hosted
+      - ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.13.2'
+
+      - name: Run Test
+        run: yarn && yarn update-types && yarn test
+      
+      - name: Upload snapshots diff
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          path: visual-regression/snapshots/__diff_output__
+      
+      - name: Upload tests result
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: tests.xml
+      
+      - name: Cleanup
+        if: ${{ always() }}
+        run: chown 995 $GITHUB_WORKSPACE/ -R
+  
+  junit-reporter:
+    runs-on:
+      - self-hosted
+      - ubuntu-latest
+    needs:
+      - test
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: test-results
+
+      - name: Report Test Result
+        uses: allegro-actions/junit-reporter@v1
+        with:
+          path: tests.xml

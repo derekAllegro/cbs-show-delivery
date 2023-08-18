@@ -1,0 +1,40 @@
+name: Update and migrate
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  install-and-update:
+    runs-on: [self-hosted, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.13.2"
+
+      - name: Yarn
+        run: yarn
+
+      - name: Migrate
+        run: yarn migrate
+
+      - name: Yarn
+        run: yarn
+
+      - name: Regenerate snapshots
+        run: yarn update-types && yarn test:update-snapshots
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{secrets.PAT}}
+          commit-message: "chore: update @cbs-ui/migrate and migrate [KAR-36]"
+          title: "Migrate to latest @cbs-ui"

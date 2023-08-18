@@ -1,0 +1,14 @@
+node_modules
+
+dist
+graphql
+coverage
+__generated__
+
+tests.xml
+yarn-error.log
+
+.vscode
+.idea
+
+.DS_Store

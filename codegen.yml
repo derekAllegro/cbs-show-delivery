@@ -1,0 +1,40 @@
+schema: ./graphql/schema.json
+generates:
+  ./graphql/types.ts:
+    plugins:
+      - typescript
+    config:
+      maybeValue: T | AuthError<T> | DataFetchingError<T> | null | undefined
+  ./:
+    preset: near-operation-file
+    documents: ./src/**/*.{tsx,ts,!graphql.ts,!test.ts,!test.tsx}
+    presetConfig:
+      folder: __generated__
+      baseTypesPath: ./graphql/types.ts
+      extension: .graphql.ts
+    plugins:
+      - "@cbs-ui/types/importResolverPlugin.js"
+      - typescript-operations
+config:
+  preResolveTypes: true
+  immutableTypes: true
+  nonOptionalTypename: true
+  exportFragmentSpreadSubTypes: true
+  useImplementingTypes: true
+  maybeValue: Maybe<T>
+  namingConvention:
+    enumValues: keep
+  scalars:
+    AdminId: string
+    CaseToken: string
+    Date: string
+    DateTime: string
+    Fraction: number
+    OfferId: string
+    PLNCurrency: string
+    SmsUserVerificationCode: string
+    UserId: string
+  inlineFragmentTypes: combine
+hooks:
+  afterOneFileWrite:
+    - prettier --config .prettierrc.js 'src/**/*.graphql.ts' --write

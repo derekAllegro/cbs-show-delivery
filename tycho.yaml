@@ -1,0 +1,100 @@
+---
+name: cbs-show-delivery
+group: pl.allegro.logistics.delivery
+
+vars:
+    health_check_k8s: &HEALTH_CHECK_K8S
+        path: "/status/ping"
+        failureThreshold: 5
+        initialDelaySeconds: 60
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 10
+    command: &COMMAND "NODE_ENV=production ./node/bin/node --max-old-space-size=32 ./server.js"
+    labels: &LABELS
+        consul: "cbs-show-delivery"
+        log-scraping: logstash
+        cbs-app: tag
+
+deploy:
+    phoenix:
+        - k8s:
+            destination: dev
+            command: *COMMAND
+            replicas: 1
+            cpus: 1
+            mem: 256
+            portCount: 1
+            livenessProbe:
+                <<: *HEALTH_CHECK_K8S
+            readinessProbe:
+                <<: *HEALTH_CHECK_K8S
+            serviceStartTimeout: 240
+            deletionGracePeriodSeconds: 5
+            labels:
+                <<: *LABELS
+            envVars:
+                APP_ENV: phoenix
+                CONFIG_PATH: /configuration/config.json
+                NODE_ENV: production
+    dev:
+        - k8s:
+            destination: dev
+            command: *COMMAND
+            replicas: 1
+            cpus: 1
+            mem: 256
+            portCount: 1
+            livenessProbe:
+                <<: *HEALTH_CHECK_K8S
+            readinessProbe:
+                <<: *HEALTH_CHECK_K8S
+            serviceStartTimeout: 240
+            deletionGracePeriodSeconds: 5
+            labels:
+                <<: *LABELS
+            envVars:
+                APP_ENV: dev
+                CONFIG_PATH: /configuration/config.json
+                NODE_ENV: production
+    test:
+        - k8s:
+            destination: test
+            command: *COMMAND
+            replicas: 1
+            cpus: 1
+            mem: 256
+            portCount: 1
+            livenessProbe:
+                <<: *HEALTH_CHECK_K8S
+            readinessProbe:
+                <<: *HEALTH_CHECK_K8S
+            serviceStartTimeout: 240
+            deletionGracePeriodSeconds: 5
+            labels:
+                <<: *LABELS
+            envVars:
+                APP_ENV: test
+                CONFIG_PATH: /configuration/config.json
+                NODE_ENV: production
+
+    prod:
+        - k8s:
+            destination: prod
+            command: *COMMAND
+            replicas: 1
+            cpus: 1
+            mem: 256
+            portCount: 1
+            livenessProbe:
+                <<: *HEALTH_CHECK_K8S
+            readinessProbe:
+                <<: *HEALTH_CHECK_K8S
+            serviceStartTimeout: 240
+            deletionGracePeriodSeconds: 5
+            labels:
+                <<: *LABELS
+            envVars:
+                APP_ENV: prod
+                CONFIG_PATH: /configuration/config.json
+                NODE_ENV: production

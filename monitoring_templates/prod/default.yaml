@@ -1,0 +1,93 @@
+channels:
+  email:
+    email_alert:
+      message_format: "{service_name} PROD | {check_name} | {event_type}"
+      recipients:
+        - "OpenNet Team MajsTRy@allegro.pl"
+  pagerduty:
+    pagerduty_alert: null
+sources:
+  http_check:
+    app_source:
+      url: service://{service_name}/status/health
+      headers:
+        Accept: text/plain
+      verify_ssl: false
+  prometheus:
+    graphql_errors:
+      query: sum(increase(api_graphql_error_total{processServiceName="cbs-show-delivery"}[10m]))
+    external_service_timeouts:
+      query: sum(increase(restProxy_error_timeout_total{processServiceName="cbs-show-delivery"}[10m]))
+    external_service_5xx:
+      query: sum(increase(restProxy_error_5xx_total{processServiceName="cbs-show-delivery"}[10m]))
+checks:
+  app_health:
+    frequency: 1
+    sources:
+      - app_source
+    tags:
+      - service-stats
+      - k8s-prod-instance
+    triggers:
+      - name: app_health_trigger_0
+        notify:
+          - pagerduty_alert
+        rule: app_source.status_code != 200 OR app_source.num_instances < 1
+        severity: critical
+        tags:
+          - http
+          - app
+  graphql_errors:
+    sources:
+      - graphql_errors
+    tags:
+      - service-stats
+    frequency: 2
+    triggers:
+      - rule: graphql_errors.values > 20
+        debounce: 3
+        severity: warning
+        notify:
+          - email_alert
+      - rule: graphql_errors.values > 50
+        debounce: 3
+        severity: error
+        notify:
+          - email_alert
+          - pagerduty_alert
+  external_service_timeouts:
+    sources:
+      - external_service_timeouts
+    tags:
+      - service-stats
+    frequency: 2
+    triggers:
+      - rule: external_service_timeouts.values > 10
+        debounce: 3
+        severity: warning
+        notify:
+          - email_alert
+      - rule: external_service_timeouts.values > 20
+        debounce: 3
+        severity: error
+        notify:
+          - email_alert
+          - pagerduty_alert
+  external_service_5xx:
+    sources:
+      - external_service_5xx
+    tags:
+      - service-stats
+    frequency: 2
+    triggers:
+      - rule: external_service_5xx.values > 10
+        debounce: 3
+        severity: warning
+        notify:
+          - email_alert
+      - rule: external_service_5xx.values > 20
+        debounce: 3
+        severity: error
+        notify:
+          - email_alert
+          - pagerduty_alert

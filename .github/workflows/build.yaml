@@ -1,0 +1,71 @@
+name: Build and upload
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: [self-hosted, ubuntu-latest]
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.13.2'
+
+    - name: Get next version
+      id: 'bump'
+      uses: allegro-actions/next-version@v1
+      with:
+        force: '1.0.0'
+
+    - name: Install and update types
+      run: yarn && yarn update-types
+
+    - name: Extract branch
+      if: github.ref != 'refs/heads/master'
+      id: extract_branch
+      run: echo "##[set-output name=branch;]$(echo '-${{github.head_ref}}')"
+
+    - name: Build
+      run: CURRENT_TAG="${{steps.bump.outputs.next_version}}${{steps.extract_branch.outputs.branch}}" yarn build
+
+    - name: Push new tag on master
+      if: github.ref == 'refs/heads/master'
+      uses: allegro-actions/create-tag@v1
+      with:
+        tag: ${{ steps.bump.outputs.next_tag }}
+        current-tag: ${{ steps.bump.outputs.current_tag }}
+
+    - name: Add node runtime
+      uses: allegro-actions/add-runtime/node@v1
+      with:
+        version: 16.13.2
+        os: linux-x64
+        target: ./dist/node
+
+    - name: Publish version on Artifactory
+      uses: allegro-actions/artifactory-publish/maven@v1
+      with:
+        host: artifactory.allegrogroup.com
+        username: ${{ secrets.ARTIFACTORY_USERNAME }}
+        password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        name: cbs-show-delivery
+        group: pl.allegro.logistics.delivery
+        buildDir: "./dist"
+        version: ${{ steps.bump.outputs.next_version }}
+
+    - name: Cleanup
+      if: ${{ always() }}
+      run: chown 995 $GITHUB_WORKSPACE/ -R
+

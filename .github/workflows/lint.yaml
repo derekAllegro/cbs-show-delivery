@@ -1,0 +1,31 @@
+name: Lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on:
+      - self-hosted
+      - ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16.13.2
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.13.2'
+
+      - run: yarn && yarn lint
+
+      - name: Cleanup
+        if: ${{ always() }}
+        run: chown 995 $GITHUB_WORKSPACE/ -R

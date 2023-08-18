@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2018",
+      "es2019",
+      "dom"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es5"
+  },
+  "files": [
+    "./node_modules/@cbs-ui/jest-utils/lib/jest.d.ts",
+    "./node_modules/@cbs-ui/types/lib/graphql/AuthError.d.ts",
+    "./node_modules/@cbs-ui/types/lib/graphql/DataFetchingError.d.ts"
+  ],
+  "include": [
+    "./manifest.ts",
+    "./src",
+    "./server",
+    "./graphql",
+    "./update-types.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
