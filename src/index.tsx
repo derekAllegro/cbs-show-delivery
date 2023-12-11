@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import { CBSProvider } from "@cbs-ui/components";
 
@@ -19,4 +19,5 @@ const Wrapper = () => {
   );
 };
 
-render(<Wrapper />, document.getElementById("root"));
+const root = createRoot(document.getElementById("root")!);
+root.render(<Wrapper />);

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { renderWithRouter, waitFor } from "@cbs-ui/jest-utils";
+import { render, waitFor } from "@cbs-ui/jest-utils";
 
 import { App } from "../App";
 import { MockedProvider } from "../testUtils/MockedProvider";
 
 describe("Home Page", () => {
   it.matchesImageSnapshot("should render component when userId is set", () => {
-    renderWithRouter(
+    render(
       <MockedProvider>
         <App />
       </MockedProvider>,
@@ -15,7 +15,7 @@ describe("Home Page", () => {
   });
 
   it("it should load mocked data", async () => {
-    const component = renderWithRouter(
+    const component = render(
       <MockedProvider>
         <App />
       </MockedProvider>,

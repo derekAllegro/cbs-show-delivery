@@ -31,7 +31,8 @@
     "./src",
     "./server",
     "./graphql",
-    "./update-types.ts"
+    "./update-types.ts",
+    "./setupJest.ts"
   ],
   "exclude": [
     "node_modules"

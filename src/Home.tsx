@@ -1,6 +1,7 @@
-import { RouteComponentProps } from "@reach/router";
 import { observer } from "mobx-react";
 import React from "react";
+// INFO BR003 RouteProps is no longer a generic type, the way of using route properties has changed. If your code hasn't been covered by migration, you will have to adjust it manually. Read https://cbs.gh.allegrogroup.com/CBS_UI_EN/Development/Migrations/v_4_0_0/#routecomponentprops for instructions.
+import { RouteProps } from "react-router-dom";
 
 import { GraphqlQueryWrapper } from "@cbs-ui/api";
 import { useStores } from "@cbs-ui/store";
@@ -12,7 +13,7 @@ interface Props {
   userId: string;
 }
 
-export const Home: React.FC<Props & RouteComponentProps> = observer(({ userId }) => {
+export const Home: React.FC<Props & RouteProps> = observer(({ userId }) => {
   const { userStore } = useStores<RootStore>(["userStore"]);
 
   React.useEffect(() => {

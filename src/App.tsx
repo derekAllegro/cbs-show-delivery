@@ -1,12 +1,22 @@
-import { Router } from "@reach/router";
 import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+import { BubbleError } from "@cbs-ui/components";
 
 import { Home } from "./Home";
 
 export const App: React.FC = () => {
-  return (
-    <Router basepath={BASE_PATH}>
-      <Home path="/" userId="93405434" />
-    </Router>
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: <Home userId="93405434" />,
+      },
+    ],
+    {
+      basename: BASE_PATH,
+    },
   );
+
+  return <RouterProvider router={router} fallbackElement={<BubbleError />}></RouterProvider>;
 };
