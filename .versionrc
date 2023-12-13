@@ -1,0 +1,44 @@
+{
+  "commitUrlFormat": "https://github.com/allegro-internal/cbs-show-delivery/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/allegro-internal/cbs-show-delivery/compare/{{previousTag}}...{{currentTag}}",
+  "releaseCommitMessageFormat": "chore(release): ZUPA-000 | {{currentTag}}",
+  "types": [
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "chore",
+        "hidden": true
+      },
+      {
+        "type": "docs",
+        "section": "Docs"
+      },
+      {
+        "type": "style",
+        "section": "Style"
+      },
+      {
+        "type": "refactor",
+        "section": "Refactoring"
+      },
+      {
+        "type": "perf",
+        "section": "Performance"
+      },
+      {
+        "type": "test",
+        "section": "Test"
+      },
+      {
+        "type": "build",
+        "section": "Build scripts"
+      }
+    ],
+    "preMajor": false
+}

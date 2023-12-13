@@ -14,7 +14,12 @@ export class UserStore extends Store {
 
   constructor(rootStore: RootStore) {
     super(rootStore);
-    makeObservable(this, { user: observable, loading: observable, errors: observable, fetchUser: action });
+    makeObservable(this, {
+      user: observable,
+      loading: observable,
+      errors: observable,
+      fetchUser: action,
+    });
   }
 
   fetchUser = async (userId: string): Promise<void> => {
