@@ -8,6 +8,8 @@ import { GraphqlQueryWrapper } from "@cbs-ui/api";
 import { useStores } from "@cbs-ui/store";
 import { PermissionWrapper } from "@cbs-ui/utils";
 
+import { PackageInfo } from "./components/packageInfo/PackageInfo";
+import { PackageInfoMockedVersion } from "./components/packageInfoMockedVersion/packageInfoMockedVersion";
 import { RootStore } from "./store/RootStore";
 
 interface Props {
@@ -42,10 +44,10 @@ export const Home: React.FC<Props & RouteProps> = observer(({ userId }) => {
         </GraphqlQueryWrapper>
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-        Col2
+        <PackageInfo shipmentId={"123"} />
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-        Col3
+        <PackageInfoMockedVersion />
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
         Col4
