@@ -8,6 +8,7 @@ import { GraphqlQueryWrapper } from "@cbs-ui/api";
 import { useStores } from "@cbs-ui/store";
 import { PermissionWrapper } from "@cbs-ui/utils";
 
+import { Return } from "./components/Return/Return";
 import { RootStore } from "./store/RootStore";
 
 interface Props {
@@ -45,7 +46,7 @@ export const Home: React.FC<Props & RouteProps> = observer(({ userId }) => {
         Col2
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
-        Col3
+        <Return />
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
         Col4
