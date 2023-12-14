@@ -1,3 +1,4 @@
+import { Col, Row } from "antd";
 import { observer } from "mobx-react";
 import React from "react";
 // INFO BR003 RouteProps is no longer a generic type, the way of using route properties has changed. If your code hasn't been covered by migration, you will have to adjust it manually. Read https://cbs.gh.allegrogroup.com/CBS_UI_EN/Development/Migrations/v_4_0_0/#routecomponentprops for instructions.
@@ -21,23 +22,34 @@ export const Home: React.FC<Props & RouteProps> = observer(({ userId }) => {
   }, []);
 
   return (
-    <div>
-      <GraphqlQueryWrapper loading={userStore.loading} errors={userStore.errors}>
-        <PermissionWrapper
-          data={userStore.user}
-          render={(user) =>
-            user?.__typename === "User" ? (
-              <div>
-                <div>Login: {user.login}</div>
-                <div>First name: {user.firstName}</div>
-                <div>Last name: {user.lastName}</div>
-              </div>
-            ) : (
-              <div>User not found</div>
-            )
-          }
-        />
-      </GraphqlQueryWrapper>
-    </div>
+    <Row>
+      <Col xs={24} sm={24} md={12} lg={12} xl={6}>
+        <GraphqlQueryWrapper loading={userStore.loading} errors={userStore.errors}>
+          <PermissionWrapper
+            data={userStore.user}
+            render={(user) =>
+              user?.__typename === "User" ? (
+                <div>
+                  <div>Login: {user.login}</div>
+                  <div>First name: {user.firstName}</div>
+                  <div>Last name: {user.lastName}</div>
+                </div>
+              ) : (
+                <div>User not found</div>
+              )
+            }
+          />
+        </GraphqlQueryWrapper>
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={6}>
+        Col2
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={6}>
+        Col3
+      </Col>
+      <Col xs={24} sm={24} md={12} lg={12} xl={6}>
+        Col4
+      </Col>
+    </Row>
   );
 });
