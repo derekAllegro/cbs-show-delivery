@@ -12,29 +12,33 @@ import { ShipmentByIdQuery, ShipmentByIdQueryVariables } from "./__generated__/R
 interface Props {
   shipmentId: string;
 }
-export const ReturnWrapper = (props: Props) => {
-  const { data, loading } = useCBSQuery<ShipmentByIdQuery, ShipmentByIdQueryVariables>(SHIPMENT_DETAILS_QUERY, {
-    variables: {
-      shipmentId: props.shipmentId,
+export const ReturnWrapper = (props: Props): React.JSX.Element => {
+  const { data, loading, errors, headers } = useCBSQuery<ShipmentByIdQuery, ShipmentByIdQueryVariables>(
+    SHIPMENT_DETAILS_QUERY,
+    {
+      variables: {
+        shipmentId: props.shipmentId,
+      },
     },
-  });
+  );
 
   const orderId = data?.wzaShipmentById?.order?.orderId;
   const userId = data?.wzaShipmentById?.order?.orderBuyer?.user?.userId;
   return (
     <Descriptions column={1} size="small" labelStyle={{ fontWeight: 500 }}>
       <Descriptions.Item label="Returned">
-        <GraphqlQueryWrapper loading={loading}>
-          {typeof orderId === "string" ? <ReturnStatus orderId={orderId} /> : <PermissionWrapper data={orderId} />}
+        <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
+          <PermissionWrapper
+            data={orderId}
+            render={(orderId) => {
+              return <ReturnStatus orderId={orderId} />;
+            }}
+          />
         </GraphqlQueryWrapper>
       </Descriptions.Item>
       <Descriptions.Item label="Details">
         <GraphqlQueryWrapper loading={loading}>
-          {typeof orderId === "string" ? (
-            <ReturnLink orderId={orderId} userId={userId} />
-          ) : (
-            <PermissionWrapper data={orderId} />
-          )}
+          <PermissionWrapper data={orderId} render={(orderId) => <ReturnLink orderId={orderId} userId={userId} />} />
         </GraphqlQueryWrapper>
       </Descriptions.Item>
     </Descriptions>

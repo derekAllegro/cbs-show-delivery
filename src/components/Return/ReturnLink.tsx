@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import React from "react";
 
 import { Maybe } from "@cbs-ui/types";
@@ -8,9 +9,16 @@ interface Props {
   userId: Maybe<string>;
 }
 export const ReturnLink = ({ orderId, userId }: Props): React.JSX.Element => {
-  if (typeof userId === "string") {
-    return <a href={`https://returns.allegrogroup.com/#/buyers/${userId}/orders/${orderId}`}>Return admin</a>;
-  }
-
-  return <PermissionWrapper data={userId} />;
+  return (
+    <PermissionWrapper
+      data={userId}
+      render={(userId) => {
+        return (
+          <Button type="link" href={`https://returns.allegrogroup.com/#/buyers/${userId}/orders/${orderId}`}>
+            Return admin
+          </Button>
+        );
+      }}
+    />
+  );
 };

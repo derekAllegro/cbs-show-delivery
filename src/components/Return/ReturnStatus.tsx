@@ -11,15 +11,16 @@ interface Props {
   orderId: string;
 }
 export const ReturnStatus = (props: Props): React.JSX.Element => {
-  const { data, loading } = useCBSQuery<OrderByIdQuery, OrderByIdQueryVariables>(RETURN_STATUS_QUERY, {
+  const { data, loading, errors, headers } = useCBSQuery<OrderByIdQuery, OrderByIdQueryVariables>(RETURN_STATUS_QUERY, {
     variables: {
       orderId: props.orderId,
     },
   });
 
+  const returnState = data?.order?.__typename === "AllegroOrder" ? data?.order.returnState : undefined;
   return (
-    <GraphqlQueryWrapper loading={loading}>
-      <PermissionWrapper data={data?.order?.__typename === "AllegroOrder" && data?.order.returnState} />
+    <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
+      <PermissionWrapper data={returnState} />
     </GraphqlQueryWrapper>
   );
 };
@@ -29,6 +30,7 @@ const RETURN_STATUS_QUERY = gql`
     order(orderId: $orderId) {
       ... on AllegroOrder {
         returnState
+        __typename
       }
     }
   }
@@ -37,5 +39,6 @@ const RETURN_STATUS_QUERY = gql`
 const mockData = {
   order: {
     returnState: "RETURNED",
+    __typename: "AllegroOrder",
   },
 };

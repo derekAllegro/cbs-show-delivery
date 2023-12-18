@@ -10,7 +10,7 @@ import { ReturnWrapper } from "./ReturnWrapper";
 import { DataKeyQuery, DataKeyQueryVariables } from "./__generated__/Return.graphql";
 
 export const Return = (): React.JSX.Element => {
-  const { data, loading } = useCBSQuery<DataKeyQuery, DataKeyQueryVariables>(DATA_KEY_QUERY, {
+  const { data, loading, errors, headers } = useCBSQuery<DataKeyQuery, DataKeyQueryVariables>(DATA_KEY_QUERY, {
     variables: {
       searchText: SHIPMENT_ID,
     },
@@ -18,7 +18,7 @@ export const Return = (): React.JSX.Element => {
 
   return (
     <Card size="small" title={"Return"}>
-      <GraphqlQueryWrapper loading={loading}>
+      <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
         <PermissionWrapper
           data={data?.findWzaDataKey?.shipmentId}
           render={(shipmentId) => {
@@ -40,9 +40,6 @@ export const DATA_KEY_QUERY = gql`
 
 const mockData = {
   findWzaDataKey: {
-    orderId: "3c774920-8202-11ee-b2b4-a7543d452647",
     shipmentId: "b137528d-1cd4-40f0-a313-208e95eef970",
-    userId: "43544065",
-    __typename: "WzaDataKey",
   },
 };
