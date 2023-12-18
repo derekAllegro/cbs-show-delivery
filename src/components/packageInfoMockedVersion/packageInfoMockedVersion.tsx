@@ -2,12 +2,14 @@ import { Card, Col, Descriptions, Row } from "antd";
 import React, { ReactElement } from "react";
 
 import { darbMocks } from "./mocks/darbMocks";
+import { darsMocks } from "./mocks/darsMocks";
 import { wsadMocks } from "./mocks/wsadMocks";
 
-export const PackageInfoMockedVersion = (): ReactElement => {
-  // shipment - Dars
-  // Settlement - DARS
+const getPunctualityLabel = (isDelayed: boolean) => {
+  return isDelayed ? "on time" : "delayed";
+};
 
+export const PackageInfoMockedVersion = (): ReactElement => {
   return (
     <div>
       <Descriptions>
@@ -28,14 +30,14 @@ export const PackageInfoMockedVersion = (): ReactElement => {
                     .estimatedDeliveryDates.to
                 }
               </p>
-              <p>[] Shipment: </p>
+              <p>[] Shipment: {getPunctualityLabel(darsMocks.data.user.orders.sold.data[0].score.dispatchInTime)} </p>
               ------------- smart
               <p>
                 [x] Smart applies:{" "}
                 {darbMocks.data.user.orders.boughtOrderGroupedByDelivery.data[0].delivery.isSmart ? "Yes" : "No"}{" "}
               </p>
               -------------------
-              <p>[] Settlement: </p>
+              <p>[] Settlement: {darsMocks.data.user.orders.sold.data[0].delivery.costTransfers[0].tags[0]} </p>
               <p>
                 [] <b>package[0]</b> Type: {wsadMocks.wzaShipmentById.packages[0].packaging}{" "}
               </p>
