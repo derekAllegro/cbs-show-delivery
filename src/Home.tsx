@@ -9,6 +9,7 @@ import { useStores } from "@cbs-ui/store";
 import { PermissionWrapper } from "@cbs-ui/utils";
 
 import { Return } from "./components/Return/Return";
+import { ReceiverDetails } from "./components/ReceiverDetails/ReceiverDetails";
 import { RootStore } from "./store/RootStore";
 
 interface Props {
@@ -47,6 +48,7 @@ export const Home: React.FC<Props & RouteProps> = observer(({ userId }) => {
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
         <Return />
+        <ReceiverDetails />
       </Col>
       <Col xs={24} sm={24} md={12} lg={12} xl={6}>
         Col4
