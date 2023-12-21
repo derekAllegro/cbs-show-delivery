@@ -1,6 +1,7 @@
 import { Flex } from "antd";
 import React from "react";
 
+import { Link } from "@cbs-ui/design-system";
 import { AllRequired, PermissionWrapper, removedFields } from "@cbs-ui/utils";
 import { DataList } from "@cbs-ui/vivo";
 
@@ -28,6 +29,7 @@ export const ReceiverDataContent = ({ receiverData, className }: ReceiverDataCon
   const user = receiverData.orderBuyer?.user;
   const pickupPoint = receiverData.delivery?.pickupPoint;
   const recipientAddres = receiverData.orderBuyer?.address;
+  const waybill = receiverData.parcelTracking?.waybills;
 
   const fields: Record<Field, React.ReactNode> = {
     "User ID": <PermissionWrapper data={user?.userId} />,
@@ -87,7 +89,16 @@ export const ReceiverDataContent = ({ receiverData, className }: ReceiverDataCon
         </span>
       </Flex>
     ),
-    PUDO: <></>,
+    PUDO: (
+      <PermissionWrapper
+        data={
+          waybill && waybill.length > 0
+            ? new AllRequired({ trackingUrl: waybill[0]?.carrier?.trackingUrl, waybillId: waybill[0]?.waybillId })
+            : null
+        }
+        render={({ data: { trackingUrl, waybillId } }) => <Link href={trackingUrl}> {waybillId}</Link>}
+      />
+    ),
     Phone: <PermissionWrapper data={user?.phone} />,
     "E-mail": <PermissionWrapper data={user?.email} />,
   };

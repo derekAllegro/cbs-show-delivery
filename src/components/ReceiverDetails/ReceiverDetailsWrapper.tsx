@@ -61,6 +61,14 @@ export const SHIPMENT_DETAILS_QUERY = gql`
         description
       }
     }
+    parcelTracking {
+      waybills {
+        carrier {
+          trackingUrl
+        }
+        waybillId
+      }
+    }
   }
 
   query shipmentById($shipmentId: String!) {
