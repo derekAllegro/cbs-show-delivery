@@ -1,11 +1,10 @@
 import { Flex } from "antd";
 import React from "react";
 
-import { Link } from "@cbs-ui/design-system";
 import { AllRequired, PermissionWrapper, removedFields } from "@cbs-ui/utils";
 import { DataList } from "@cbs-ui/vivo";
 
-import { OrderDetailsFragment } from "./__generated__/ReceiverDetailsWrapper.graphql";
+import { DeliveryAddressFragment, OrderDetailsFragment } from "./__generated__/ReceiverDetailsWrapper.graphql";
 
 const fields = [
   "User ID",
@@ -21,15 +20,19 @@ type Fields = typeof fields;
 type Field = Fields[number];
 
 interface ReceiverDataContentProps {
-  receiverData: OrderDetailsFragment;
+  order: OrderDetailsFragment;
+  deliveryAddress: DeliveryAddressFragment;
   className?: string;
 }
 
-export const ReceiverDataContent = ({ receiverData, className }: ReceiverDataContentProps): React.JSX.Element => {
-  const user = receiverData.orderBuyer?.user;
-  const pickupPoint = receiverData.delivery?.pickupPoint;
-  const recipientAddres = receiverData.orderBuyer?.address;
-  const waybill = receiverData.parcelTracking?.waybills;
+export const ReceiverDataContent = ({
+  order,
+  deliveryAddress,
+  className,
+}: ReceiverDataContentProps): React.JSX.Element => {
+  const user = order.orderBuyer?.user;
+  const pickupPoint = order.delivery?.pickupPoint;
+  const recipientAddres = order.orderBuyer?.address;
 
   const fields: Record<Field, React.ReactNode> = {
     "User ID": <PermissionWrapper data={user?.userId} />,
@@ -89,16 +92,7 @@ export const ReceiverDataContent = ({ receiverData, className }: ReceiverDataCon
         </span>
       </Flex>
     ),
-    PUDO: (
-      <PermissionWrapper
-        data={
-          waybill && waybill.length > 0
-            ? new AllRequired({ trackingUrl: waybill[0]?.carrier?.trackingUrl, waybillId: waybill[0]?.waybillId })
-            : null
-        }
-        render={({ data: { trackingUrl, waybillId } }) => <Link href={trackingUrl}> {waybillId}</Link>}
-      />
-    ),
+    PUDO: <PermissionWrapper data={deliveryAddress?.pointName} />,
     Phone: <PermissionWrapper data={user?.phone} />,
     "E-mail": <PermissionWrapper data={user?.email} />,
   };

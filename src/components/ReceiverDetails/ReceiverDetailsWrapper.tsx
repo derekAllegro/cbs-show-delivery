@@ -1,10 +1,8 @@
-import { Descriptions } from "antd";
 import { gql } from "graphql-tag";
 import React from "react";
 
 import { GraphqlQueryWrapper, useCBSQuery } from "@cbs-ui/api";
-import { UserData } from "@cbs-ui/components";
-import { PermissionWrapper } from "@cbs-ui/utils";
+import { AllRequired, PermissionWrapper } from "@cbs-ui/utils";
 
 import { ReceiverDataContent } from "./ReceiverDataContent";
 import { ShipmentByIdQuery, ShipmentByIdQueryVariables } from "./__generated__/ReceiverDetailsWrapper.graphql";
@@ -24,10 +22,21 @@ export const ReceiverDetailsWrapper = (props: Props): React.JSX.Element => {
   );
 
   const order = data?.wzaShipmentById?.order;
+  const deliveryAddress = data?.wzaShipmentById?.deliveryAddress;
 
   return (
     <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
-      <PermissionWrapper data={order} render={(order) => <ReceiverDataContent receiverData={order} />} />
+      <PermissionWrapper
+        data={
+          new AllRequired({
+            order,
+            deliveryAddress,
+          })
+        }
+        render={({ data: { order, deliveryAddress } }) => (
+          <ReceiverDataContent order={order} deliveryAddress={deliveryAddress} />
+        )}
+      />
     </GraphqlQueryWrapper>
   );
 };
@@ -61,19 +70,26 @@ export const SHIPMENT_DETAILS_QUERY = gql`
         description
       }
     }
-    parcelTracking {
-      waybills {
-        carrier {
-          trackingUrl
-        }
-        waybillId
-      }
-    }
+  }
+
+  fragment deliveryAddress on Address {
+    city
+    companyName
+    firstName
+    lastName
+    street
+    zipCode
+    phoneNumber
+    __typename
+    pointName
   }
 
   query shipmentById($shipmentId: String!) {
     wzaShipmentById(shipmentId: $shipmentId) {
-      __typename
+      deliveryAddress {
+        ...deliveryAddress
+      }
+
       order {
         ...orderDetails
       }

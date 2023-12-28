@@ -37,7 +37,7 @@ const elements = [
     label: "Delivery address",
     value: `Poznań`,
   },
-  { label: "PUDO", value: "A00003LKR9" },
+  { label: "PUDO", value: "TestPointName" },
   { label: "Phone", value: "12 345 67 89" },
   { label: "E-mail", value: "olga.gortych@allegro.com" },
 ];
@@ -47,7 +47,17 @@ describe("Receiver Details component", () => {
   const mockOverride = new MockOverride();
   mockOverride.setMockOverride<ShipmentByIdQuery>({
     wzaShipmentById: {
-      __typename: "WzaShipment",
+      deliveryAddress: {
+        city: "Poznań",
+        companyName: null,
+        firstName: "o",
+        lastName: "g",
+        street: "Wierzbięcice 2",
+        zipCode: "60-688",
+        phoneNumber: "+48123456789",
+        __typename: "Address",
+        pointName: "TestPointName",
+      },
       order: {
         orderId: "3c774920-8202-11ee-b2b4-a7543d452647",
         orderBuyer: {
@@ -82,21 +92,9 @@ describe("Receiver Details component", () => {
           },
           __typename: "OrderDelivery",
         },
-        parcelTracking: {
-          waybills: [
-            {
-              carrier: {
-                trackingUrl: "https://allegro.pl/kampania/one/kurier/sledzenie-paczki?numer=A00003LKR9",
-                __typename: "NamedCarrier",
-              },
-              waybillId: "A00003LKR9",
-              __typename: "Waybill",
-            },
-          ],
-          __typename: "ParcelTracking",
-        },
         __typename: "Order",
       },
+      __typename: "WzaShipment",
     },
   });
 
