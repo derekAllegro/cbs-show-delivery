@@ -1,6 +1,7 @@
 import { Flex } from "antd";
 import React from "react";
 
+import { Maybe } from "@cbs-ui/types";
 import { AllRequired, PermissionWrapper, removedFields } from "@cbs-ui/utils";
 import { DataList } from "@cbs-ui/vivo";
 
@@ -20,8 +21,12 @@ type Fields = typeof fields;
 type Field = Fields[number];
 
 interface ReceiverDataContentProps {
-  order: OrderDetailsFragment;
-  deliveryAddress: DeliveryAddressFragment;
+  order: Maybe<{ readonly __typename: "Order" } & OrderDetailsFragment>;
+  deliveryAddress: Maybe<
+    {
+      readonly __typename: "Address";
+    } & DeliveryAddressFragment
+  >;
   className?: string;
 }
 
@@ -30,9 +35,9 @@ export const ReceiverDataContent = ({
   deliveryAddress,
   className,
 }: ReceiverDataContentProps): React.JSX.Element => {
-  const user = order.orderBuyer?.user;
-  const pickupPoint = order.delivery?.pickupPoint;
-  const recipientAddres = order.orderBuyer?.address;
+  const user = order?.orderBuyer?.user;
+  const pickupPoint = order?.delivery?.pickupPoint;
+  const recipientAddres = order?.orderBuyer?.address;
 
   const fields: Record<Field, React.ReactNode> = {
     "User ID": <PermissionWrapper data={user?.userId} />,

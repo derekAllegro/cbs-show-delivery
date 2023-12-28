@@ -26,17 +26,7 @@ export const ReceiverDetailsWrapper = (props: Props): React.JSX.Element => {
 
   return (
     <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
-      <PermissionWrapper
-        data={
-          new AllRequired({
-            order,
-            deliveryAddress,
-          })
-        }
-        render={({ data: { order, deliveryAddress } }) => (
-          <ReceiverDataContent order={order} deliveryAddress={deliveryAddress} />
-        )}
-      />
+      <ReceiverDataContent order={order} deliveryAddress={deliveryAddress} />
     </GraphqlQueryWrapper>
   );
 };
