@@ -1,9 +1,25 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 
-import { MockedCBSProvider } from "@cbs-ui/jest-utils";
+import { ErrorResponse, MockOverride, MockedCBSProvider } from "@cbs-ui/jest-utils";
 
 import { RootStore } from "../store/RootStore";
 
-export const MockedProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  return <MockedCBSProvider rootStore={new RootStore()}>{children}</MockedCBSProvider>;
+interface Props {
+  rootStore?: RootStore;
+  mockOverride?: MockOverride;
+  errorResponse?: ErrorResponse;
+  children: React.ReactNode;
+}
+
+export const MockedProvider = ({
+  children,
+  mockOverride,
+  rootStore = new RootStore(),
+  errorResponse,
+}: Props): React.JSX.Element => {
+  return (
+    <MockedCBSProvider rootStore={rootStore} mockOverride={mockOverride} errorResponse={errorResponse}>
+      {children}
+    </MockedCBSProvider>
+  );
 };
