@@ -2,7 +2,6 @@ import { gql } from "graphql-tag";
 import React from "react";
 
 import { GraphqlQueryWrapper, useCBSQuery } from "@cbs-ui/api";
-import { AllRequired, PermissionWrapper } from "@cbs-ui/utils";
 
 import { ReceiverDataContent } from "./ReceiverDataContent";
 import { ShipmentByIdQuery, ShipmentByIdQueryVariables } from "./__generated__/ReceiverDetailsWrapper.graphql";
