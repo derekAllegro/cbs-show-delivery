@@ -3,21 +3,11 @@ import React from "react";
 import { MockOverride, renderWithRouter, screen, waitForLoadersDisappear, within } from "@cbs-ui/jest-utils";
 
 import { MockedProvider } from "../../testUtils/MockedProvider";
+import { verifyValueWithLabelDataItem } from "../../testUtils/helper";
 import { ReceiverDetails } from "./ReceiverDetails";
 import { ShipmentByIdQuery } from "./__generated__/ReceiverDetailsWrapper.graphql";
 
-const getValueAndLabelElement = (labelString: string, valueString: string) => {
-  const label = screen.getByText(labelString);
-  const nextSibling = label?.nextSibling as HTMLElement;
-  const withinParent = within(nextSibling);
-  const value = withinParent.getByText(new RegExp(`${valueString}`));
-
-  return { label, value };
-};
-
 describe("Receiver Details component", () => {
-  // given
-
   const elements = [
     { label: "User ID", value: "106736730" },
     { label: "Name and surname", value: "TestoweImie" },
@@ -51,7 +41,7 @@ describe("Receiver Details component", () => {
       value: `Poznań`,
     },
     { label: "PUDO", value: "TestPointName" },
-    { label: "Phone", value: "12 345 67 89" },
+    { label: "Phone", value: "48 12 345 67 89" },
     { label: "E-mail", value: "olga.gortych@allegro.com" },
   ];
 
@@ -119,10 +109,8 @@ describe("Receiver Details component", () => {
     );
     await waitForLoadersDisappear();
 
-    const { label, value } = getValueAndLabelElement(element.label, element.value);
     // then
-    expect(label).toBeInTheDocument();
-    expect(value).toBeInTheDocument();
+    expect(verifyValueWithLabelDataItem(element.label, element.value)).toBeTruthy();
   });
 
   it(`should render '-', when PUDO is null`, async () => {
@@ -189,10 +177,8 @@ describe("Receiver Details component", () => {
     );
     await waitForLoadersDisappear();
 
-    const { label, value } = getValueAndLabelElement("PUDO", "-");
     // then
-    expect(label).toBeInTheDocument();
-    expect(value).toBeInTheDocument();
+    expect(verifyValueWithLabelDataItem("PUDO", "-")).toBeTruthy();
   });
 
   const elementsFailure = [
@@ -231,10 +217,8 @@ describe("Receiver Details component", () => {
       );
       await waitForLoadersDisappear();
 
-      const { label, value } = getValueAndLabelElement(element.label, element.value);
       // then
-      expect(label).toBeInTheDocument();
-      expect(value).toBeInTheDocument();
+      expect(verifyValueWithLabelDataItem(element.label, element.value)).toBeTruthy();
     },
   );
 });
