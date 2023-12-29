@@ -1,9 +1,11 @@
+import { Flex } from "antd";
 import { gql } from "graphql-tag";
 import React from "react";
 
-import { GraphqlQueryWrapper, useCBSQuery } from "@cbs-ui/api";
+import { useCBSQuery } from "@cbs-ui/api";
+import { AllRequired, PermissionWrapper } from "@cbs-ui/utils/lib/PermissionWrapper/PermissionWrapper";
 
-import { ReceiverDataContent } from "./ReceiverDataContent";
+import { DataItem } from "../DataItem/DataItem";
 import { ShipmentByIdQuery, ShipmentByIdQueryVariables } from "./__generated__/ReceiverDetailsWrapper.graphql";
 
 interface Props {
@@ -20,13 +22,73 @@ export const ReceiverDetailsWrapper = (props: Props): React.JSX.Element => {
     },
   );
 
-  const order = data?.wzaShipmentById?.order;
+  const user = data?.wzaShipmentById?.order?.orderBuyer?.user;
+  const recipientAddres = data?.wzaShipmentById?.order?.orderBuyer?.address;
+  const pickupPoint = data?.wzaShipmentById?.order?.delivery?.pickupPoint;
   const deliveryAddress = data?.wzaShipmentById?.deliveryAddress;
 
   return (
-    <GraphqlQueryWrapper loading={loading} errors={errors} headers={headers}>
-      <ReceiverDataContent order={order} deliveryAddress={deliveryAddress} />
-    </GraphqlQueryWrapper>
+    <>
+      <DataItem label="User ID" loading={loading} errors={errors} headers={headers}>
+        <PermissionWrapper data={user?.userId} />
+      </DataItem>
+      <DataItem label="Name and surname" loading={loading}>
+        <>
+          <PermissionWrapper data={user?.firstName} />
+          <PermissionWrapper data={user?.lastName} />
+        </>
+      </DataItem>
+      <DataItem label="Recipient's address" loading={loading}>
+        <PermissionWrapper
+          data={
+            new AllRequired({
+              street: recipientAddres?.street,
+              zipCode: recipientAddres?.zipCode,
+              city: recipientAddres?.city,
+            })
+          }
+          render={({ data: { street, city, zipCode } }) => (
+            <>
+              {street} <br />
+              {zipCode} {city}
+            </>
+          )}
+        />
+      </DataItem>
+      <DataItem label="Delivery address" loading={loading}>
+        <Flex>
+          <span>
+            <PermissionWrapper data={pickupPoint?.name} />
+            <PermissionWrapper
+              data={pickupPoint?.description}
+              render={(description) => <>({description})</>}
+              renderEmpty={() => null}
+            />
+            <br />
+            <PermissionWrapper data={pickupPoint?.address?.street} />
+            <br />
+            <PermissionWrapper
+              data={new AllRequired({ zipCode: pickupPoint?.address?.zipCode, city: pickupPoint?.address?.city })}
+              render={({ data: { city, zipCode } }) => (
+                <>
+                  {zipCode} {city}
+                </>
+              )}
+            />
+            <br />
+          </span>
+        </Flex>
+      </DataItem>
+      <DataItem label="PUDO" loading={loading}>
+        <PermissionWrapper data={deliveryAddress?.pointName} />
+      </DataItem>
+      <DataItem label="Phone" loading={loading}>
+        <PermissionWrapper data={user?.phone} />
+      </DataItem>
+      <DataItem label="E-mail" loading={loading}>
+        <PermissionWrapper data={user?.email} />
+      </DataItem>
+    </>
   );
 };
 

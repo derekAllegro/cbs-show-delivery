@@ -8,8 +8,8 @@ import { ShipmentByIdQuery } from "./__generated__/ReceiverDetailsWrapper.graphq
 
 const getValueAndLabelElement = (labelString: string, valueString: string) => {
   const label = screen.getByText(labelString);
-  const parentElement = label.parentElement?.nextSibling as HTMLElement;
-  const withinParent = within(parentElement);
+  const nextSibling = label?.nextSibling as HTMLElement;
+  const withinParent = within(nextSibling);
   const value = withinParent.getByText(new RegExp(`${valueString}`));
 
   return { label, value };
@@ -20,7 +20,8 @@ describe("Receiver Details component", () => {
 
   const elements = [
     { label: "User ID", value: "106736730" },
-    { label: "Name and surname", value: "O G" },
+    { label: "Name and surname", value: "TestoweImie" },
+    { label: "Name and surname", value: "TestoweNazwisko" },
     {
       label: "Recipient's address",
       value: `Wierzbięcice 1`,
@@ -76,8 +77,8 @@ describe("Receiver Details component", () => {
             user: {
               userId: "106736730",
               email: "olga.gortych@allegro.com",
-              firstName: "O",
-              lastName: "G",
+              firstName: "TestoweImie",
+              lastName: "TestoweNazwisko",
               phone: "+48 12 345 67 89",
               __typename: "User",
             },
